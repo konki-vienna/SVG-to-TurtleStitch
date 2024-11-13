@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SVG Path Analyzer for Turtle Stitch</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background: #f5f5f5;
+      }
+      .container {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .controls {
+        margin-bottom: 20px;
+      }
+      .input-group {
+        margin-bottom: 15px;
+      }
+      .input-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      .preview {
+        border: 1px solid #ddd;
+        margin: 20px 0;
+        padding: 20px;
+        background: #fff;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      #pathPreview {
+        width: 100%;
+        height: auto;
+        background: #f8f8f8;
+      }
+      textarea {
+        width: 100%;
+        height: 200px;
+        margin-top: 10px;
+        font-family: monospace;
+      }
+      button {
+        background: #0066cc;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-right: 10px;
+      }
+      button:hover {
+        background: #0052a3;
+      }
+      .dot {
+        r: 2;
+      }
+      #stats {
+        /* margin-top: 10px;
+        font-weight: bold; */
+        text-align: center;
+        padding: 10px;
+        background: #f8f8f8;
+        border-radius: 4px;
+        margin-top: 10px;
+        font-family: monospace;
+      }
+      .legend {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 10px;
+        margin: 20px 0;
+        padding: 10px;
+        background: #f8f8f8;
+        border-radius: 4px;
+      }
+      .legend-item {
+        display: flex;
+        align-items: center;
+        padding: 8px;
+        background: white;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .legend-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      .legend-color {
+        width: 24px;
+        height: 24px;
+        border-radius: 4px;
+        margin-right: 12px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+      }
+      .legend-info {
+        font-size: 14px;
+        line-height: 1.4;
+      }
+      .legend-info .path-id {
+        font-family: monospace;
+        background: #f5f5f5;
+        padding: 2px 4px;
+        border-radius: 2px;
+      }
+      .legend-buttons {
+        display: flex;
+        gap: 5px;
+      }
+      .legend-buttons button {
+        padding: 5px 10px;
+        font-size: 12px;
+      }
+      .dimensions {
+        text-align: center;
+        padding: 10px;
+        background: #f8f8f8;
+        border-radius: 4px;
+        margin-top: 10px;
+        font-family: monospace;
+      }
+      .color-hex {
+        font-family: monospace;
+        font-size: 12px;
+        color: #666;
+      }
+      .path-preview path {
+        transition: opacity 0.2s ease;
+      }
+      .path-preview path.dimmed {
+        opacity: 0.3;
+      }
+
+      .toast-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        z-index: 1000;
+      }
+      .toast {
+        background: #333;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 4px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s;
+        opacity: 0;
+      }
+      .toast.success {
+        background: #2e7d32;
+      }
+      .credits {
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+        text-align: center;
+        color: #666;
+      }
+
+      .credits p {
+        margin: 8px 0;
+      }
+
+      .version {
+        font-size: 12px;
+        color: #999;
+      }
+
+      .social-links {
+        margin-top: 16px;
+      }
+
+      .social-link {
+        display: inline-block;
+        padding: 6px 12px;
+        margin: 0 8px;
+        color: #0066cc;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 14px;
+        transition: all 0.2s ease;
+      }
+
+      .social-link:hover {
+        background: #f0f7ff;
+        color: #0052a3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>SVG Path Analyzer for Turtle Stitch</h1>
+
+      <div class="controls">
+        <div class="input-group">
+          <label for="fileInput">Upload SVG file:</label>
+          <input type="file" id="fileInput" accept=".svg" />
+        </div>
+
+        <div class="input-group">
+          <label for="interval">Interval (px):</label>
+          <input type="number" id="interval" value="5" min="1" step="1" />
+        </div>
+      </div>
+
+      <div class="preview">
+        <svg
+          id="pathPreview"
+          class="path-preview"
+          preserveAspectRatio="xMidYMid meet"
+        ></svg>
+      </div>
+
+      <div class="legend" id="legend"></div>
+      <div class="dimensions" id="dimensions"></div>
+
+      <div id="stats"></div>
+
+      <div class="input-group">
+        <label for="output"><br />Coordinates (CSV):</label>
+        <textarea id="output" readonly></textarea>
+      </div>
+
+      <button id="copyButton">Copy to Clipboard</button>
+
+      <div class="credits">
+        <p>
+          Created with ❤️ by <a href="#">Konstantin Demblin</a> with the help of
+          <a href="https://claude.ai/">Claude AI</a>.
+        </p>
+        <p class="version">Version 1.10.0</p>
+        <div class="social-links">
+          <a href="#" class="social-link">GitHub</a>
+          <a href="#" class="social-link">Documentation</a>
+          <a href="#" class="social-link">Report Issues</a>
+        </div>
+      </div>
+
+      <div class="toast-container" id="toastContainer"></div>
+    </div>
+
+    <script>
+      let currentPath = null;
+      let originalViewBox = null;
+      let allPaths = [];
+      let pointsPerPath = [];
+      let csvData = [];
+
+      const pathColors = [
+        "#FF6F61",
+        "#6B5B93",
+        "#88B04B",
+        "#F7CAC9",
+        "#92A8D1",
+        "#955251",
+        "#E4B5B2",
+        "#F9C74F",
+        "#90BE6D",
+        "#F94144",
+        "#F3722C",
+        "#F8961E",
+        "#277DA1",
+        "#FF9B85",
+        "#F9C74F",
+        "#43AA8B",
+        "#F94144",
+        "#90BE6D",
+        "#577590",
+        "#F9C74F",
+        "#F3722C",
+        "#F8961E",
+        "#4D908E",
+        "#FFC300",
+        "#FF5733",
+        "#C70039",
+        "#900C3F",
+        "#581845",
+        "#FF8D1B",
+        "#FFB300",
+        "#D1C6E7",
+        "#6A0572",
+        "#A9DFBF",
+        "#F5B041",
+        "#D35400",
+        "#1F618D",
+        "#F1948A",
+        "#7D3C98",
+        "#5D6D7E",
+        "#F4D03F",
+        "#E67E22",
+        "#2980B9",
+        "#16A085",
+        "#1ABC9C",
+        "#2ECC71",
+        "#27AE60",
+        "#D5DBDB",
+        "#F7DC6F",
+        "#B03A2E",
+        "#F5B7B1",
+      ];
+
+      function getPointsAlongPath(path, interval) {
+        const points = [];
+        const pathLength = path.getTotalLength();
+        let distance = 0;
+
+        while (distance <= pathLength) {
+          const point = path.getPointAtLength(distance);
+          points.push([
+            Math.round(point.x * 100) / 100,
+            Math.round(point.y * 100) / 100,
+          ]);
+          distance += interval;
+        }
+
+        return points;
+      }
+
+      const handleButtonClick = (event) => {
+        const legendItem = event.target.closest(".legend-item");
+        const csvData = legendItem.querySelector(".legend-csv").textContent;
+        const buttonLabel = event.target.textContent;
+        const csvWithLabel = `${csvData},${buttonLabel}`;
+        navigator.clipboard.writeText(csvWithLabel);
+        showToast(`Copied to clipboard`);
+      };
+
+      function updateLegend(paths, points) {
+        const legend = document.getElementById("legend");
+        legend.innerHTML = "";
+
+        paths.forEach((path, index) => {
+          const pathPoints = points.filter((p) => p.pathIndex === index + 1);
+
+          const container = document.createElement("div");
+
+          const item = document.createElement("div");
+          item.className = "legend-item";
+
+          const color = document.createElement("div");
+          color.className = "legend-color";
+          const pathColor = pathColors[index % pathColors.length];
+          color.style.backgroundColor = pathColor;
+
+          const info = document.createElement("div");
+          info.className = "legend-info";
+          info.innerHTML = `
+                    Path ${index + 1}<br>
+                      <span class="path-id">${
+                        pathPoints.length
+                      } points</span><br>
+                      <span class="color-hex">${pathColor}</span>
+                `;
+
+          // info.innerHTML = `
+          //           Path ${index + 1}<br>
+          //           <span class="path-id">${pathPoints[0].pathHex}</span><br>
+          //           ${pathPoints.length} points<br>
+          //           <span class="color-hex">${pathColor}</span>
+          //       `;
+
+          //CUSTOM BUTTONS - START
+          const buttonContainer = document.createElement("div");
+          buttonContainer.className = "legend-buttons";
+
+          const stitchButton = document.createElement("div");
+          stitchButton.className = "legend-item";
+          stitchButton.innerHTML = `
+		  stitch
+	  `;
+          stitchButton.addEventListener("click", () =>
+            copyPathCSV(index, pathPoints, "stitch")
+          );
+          stitchButton.addEventListener("mouseenter", () =>
+            highlightPath(index)
+          );
+          stitchButton.addEventListener("mouseleave", resetPaths);
+
+          const fillButton = document.createElement("div");
+          fillButton.className = "legend-item";
+          fillButton.innerHTML = `
+		  fill
+	  `;
+          fillButton.addEventListener("click", () =>
+            copyPathCSV(index, pathPoints, "fill")
+          );
+          fillButton.addEventListener("mouseenter", () => highlightPath(index));
+          fillButton.addEventListener("mouseleave", resetPaths);
+
+          const addToFillButton = document.createElement("div");
+          addToFillButton.className = "legend-item";
+          addToFillButton.innerHTML = `
+addToFill
+`;
+          addToFillButton.addEventListener("click", () =>
+            copyPathCSV(index, pathPoints, "addToFill")
+          );
+          addToFillButton.addEventListener("mouseenter", () =>
+            highlightPath(index)
+          );
+          addToFillButton.addEventListener("mouseleave", resetPaths);
+
+          const mergeButton = document.createElement("div");
+          mergeButton.className = "legend-item";
+          mergeButton.innerHTML = `
+merge
+`;
+          mergeButton.addEventListener("click", () =>
+            copyPathCSV(index, pathPoints, "merge")
+          );
+          mergeButton.addEventListener("mouseenter", () =>
+            highlightPath(index)
+          );
+          mergeButton.addEventListener("mouseleave", resetPaths);
+
+          buttonContainer.appendChild(stitchButton);
+          buttonContainer.appendChild(fillButton);
+          buttonContainer.appendChild(addToFillButton);
+          buttonContainer.appendChild(mergeButton);
+
+          //CUSTOM BUTTONS - END
+
+          item.appendChild(color);
+          item.appendChild(info);
+
+          item.addEventListener("mouseenter", () => highlightPath(index));
+          item.addEventListener("mouseleave", resetPaths);
+          item.addEventListener("click", () => copyPathCSV(index, pathPoints));
+
+          container.appendChild(item);
+          container.appendChild(buttonContainer);
+
+          legend.appendChild(container);
+        });
+      }
+
+      function highlightPath(selectedIndex) {
+        const preview = document.getElementById("pathPreview");
+        const paths = preview.querySelectorAll("path");
+
+        paths.forEach((path, index) => {
+          if (index === selectedIndex) {
+            path.classList.remove("dimmed");
+          } else {
+            path.classList.add("dimmed");
+          }
+        });
+
+        const dots = preview.querySelectorAll(".dot");
+        dots.forEach((dot, index) => {
+          let startIndex = 0;
+          for (let i = 0; i < selectedIndex; i++) {
+            startIndex += pointsPerPath[i] || 0;
+          }
+
+          if (
+            index >= startIndex &&
+            index < startIndex + (pointsPerPath[selectedIndex] || 0)
+          ) {
+            dot.style.display = "";
+            dot.setAttribute("r", "3");
+          } else {
+            dot.style.display = "none";
+          }
+        });
+      }
+
+      function resetPaths() {
+        const preview = document.getElementById("pathPreview");
+        const paths = preview.querySelectorAll("path");
+        paths.forEach((path) => path.classList.remove("dimmed"));
+
+        const dots = preview.querySelectorAll(".dot");
+        dots.forEach((dot) => {
+          dot.style.display = "";
+          dot.setAttribute("r", "2");
+        });
+      }
+
+      function updatePreview(svgContent) {
+        const parser = new DOMParser();
+        const svgDoc = parser.parseFromString(svgContent, "image/svg+xml");
+        const paths = Array.from(svgDoc.querySelectorAll("path"));
+
+        if (paths.length === 0) {
+          alert("No paths found in SVG file");
+          return;
+        }
+
+        allPaths = paths;
+        pointsPerPath = [];
+        csvData = [];
+
+        const preview = document.getElementById("pathPreview");
+        preview.innerHTML = "";
+
+        const originalSvg = svgDoc.querySelector("svg");
+        const viewBox = originalSvg.getAttribute("viewBox") || "0 0 100 100";
+        preview.setAttribute("viewBox", viewBox);
+        originalViewBox = viewBox;
+
+        const [vbX, vbY, vbWidth, vbHeight] = viewBox.split(" ").map(Number);
+        const aspectRatio = vbHeight / vbWidth;
+        const width = Math.min(900, window.innerWidth - 80);
+        const height = width * aspectRatio;
+
+        preview.style.width = `${width}px`;
+        preview.style.height = `${height}px`;
+
+        paths.forEach((originalPath, index) => {
+          const newPath = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "path"
+          );
+          newPath.setAttribute("d", originalPath.getAttribute("d"));
+          newPath.setAttribute("stroke", pathColors[index % pathColors.length]);
+          newPath.setAttribute("fill", "none");
+          newPath.setAttribute("stroke-width", "1");
+          preview.appendChild(newPath);
+        });
+
+        document.getElementById("dimensions").innerHTML = `
+                Dimensions: ${width.toFixed(0)}px × ${height.toFixed(0)}px<br>
+                ViewBox: ${vbX} ${vbY} ${vbWidth} ${vbHeight}<br>
+            `;
+
+        analyzeAllPaths();
+      }
+
+      function analyzeAllPaths() {
+        if (!allPaths.length) return;
+
+        const interval = parseFloat(document.getElementById("interval").value);
+        const preview = document.getElementById("pathPreview");
+
+        preview.querySelectorAll(".dot").forEach((dot) => dot.remove());
+
+        let totalPoints = 0;
+        csvData = [];
+        pointsPerPath = [];
+
+        preview.querySelectorAll("path").forEach((path, pathIndex) => {
+          const dValue = path.getAttribute("d");
+          const pathHex = `path-${(pathIndex + 1)
+            .toString()
+            .padStart(2, "0")}-${dValue.slice(0, 10)}`;
+          const pathColor = pathColors[pathIndex % pathColors.length];
+          const points = getPointsAlongPath(path, interval);
+          pointsPerPath[pathIndex] = points.length;
+          totalPoints += points.length;
+
+          points.forEach(([x, y]) => {
+            const dot = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "circle"
+            );
+            dot.setAttribute("cx", x);
+            dot.setAttribute("cy", y);
+            dot.setAttribute("class", "dot");
+            dot.setAttribute("fill", pathColor);
+            preview.appendChild(dot);
+
+            csvData.push({
+              pathIndex: pathIndex + 1,
+              pathHex,
+              pathColor,
+              x,
+              y,
+            });
+          });
+        });
+
+        document.getElementById(
+          "stats"
+        ).textContent = `Total paths: ${allPaths.length}, Total points: ${totalPoints}`;
+
+        const csvLines = [];
+        let currentPathIndex = null;
+
+        csvData.forEach((point) => {
+          if (currentPathIndex !== point.pathIndex) {
+            if (currentPathIndex !== null) {
+              csvLines.push("");
+            }
+            csvLines.push(`# ${point.pathHex}`);
+            csvLines.push(`# Color: ${point.pathColor}`);
+            csvLines.push("x,y");
+            currentPathIndex = point.pathIndex;
+          }
+          csvLines.push(`${point.x},${point.y}`);
+        });
+
+        document.getElementById("output").value = csvLines.join("\n");
+
+        updateLegend(allPaths, csvData);
+      }
+
+      function copyPathCSV(pathIndex, pathPoints, string = undefined) {
+        const pathCSV = pathPoints
+          .map((point) => `${point.x},${point.y}`)
+          .join("\n");
+        let finalCSV = pathCSV;
+        if (string != undefined) {
+          finalCSV = pathCSV + "\n" + string;
+        }
+        navigator.clipboard.writeText(finalCSV);
+        showToast(`Copied to clipboard`);
+      }
+
+      // New toast function
+      function showToast(message, type = "success") {
+        console.log("showToast");
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+
+        const container = document.getElementById("toastContainer");
+        container.appendChild(toast);
+
+        // Force reflow to trigger animation
+        toast.offsetHeight;
+        toast.style.opacity = "1";
+
+        // Remove toast after animation
+        setTimeout(() => {
+          toast.style.opacity = "0";
+          setTimeout(() => {
+            container.removeChild(toast);
+          }, 300);
+        }, 3000);
+      }
+
+      window.addEventListener("resize", () => {
+        if (originalViewBox) {
+          const preview = document.getElementById("pathPreview");
+          const [, , vbWidth, vbHeight] = originalViewBox
+            .split(" ")
+            .map(Number);
+          const aspectRatio = vbHeight / vbWidth;
+          const width = Math.min(900, window.innerWidth - 80);
+          const height = width * aspectRatio;
+
+          preview.style.width = `${width}px`;
+          preview.style.height = `${height}px`;
+
+          document.getElementById("dimensions").innerHTML = `
+                    Dimensions: ${width.toFixed(0)}px × ${height.toFixed(
+            0
+          )}px<br>
+                    ViewBox: ${originalViewBox}
+                `;
+        }
+      });
+
+      document.getElementById("fileInput").addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => updatePreview(e.target.result);
+        reader.readAsText(file);
+      });
+
+      document
+        .getElementById("interval")
+        .addEventListener("change", analyzeAllPaths);
+
+      document.getElementById("copyButton").addEventListener("click", () => {
+        const textarea = document.getElementById("output");
+        textarea.select();
+        document.execCommand("copy");
+        showToast(`Copied to clipboard`);
+      });
+    </script>
+  </body>
+</html>
