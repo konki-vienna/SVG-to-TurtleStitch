@@ -41,6 +41,7 @@ This guide won't cover how to use Figma as such; it will only focus on what to k
 
 #### SVG export
 You can download the exported [SVG file here](https://github.com/konki-vienna/SVG-to-TurtleStitch/blob/main/SVGs/Letter-E.svg)
+[here](https://raw.githubusercontent.com/konki-vienna/SVG-to-TurtleStitch/refs/heads/main/SVGs/Letter-E.svg)
 
 </details>
 
