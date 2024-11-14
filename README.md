@@ -31,22 +31,12 @@ This guide won't cover how to use Figma as such; it will only focus on what to k
 
   1. Make sure that the design you want to export as SVG is not bigger than what your stitching machine can handle. In my case, I figured out that a design in Figma which is 900 x 650 pixels, will result in a stitching of 18 x 13cm (which is the maximum my machine can handle).
   2. Every "single line" to get stitched has to be its own layer in Figma which will result in an individual path per layer once the creation gets exported from Figma as an SVG.
-  3. The order of the layers in Figma will translate to the order of the paths in the SVG (top layer -> path 1, second layer -> path 2, last layer -> last path). For complex designs it might make sense to keep this in mind for a better overview.
-  4. All the different paths (=single lines) in Figma have to be grouped to keep their position relative to each other. The entire group has to be exported as SVG.
-  5. Designs have to be flipped (upside down) in Figma to show up correctly in Turtle Stitch.
+  3. Make sure to set every single `Stroke' to `center` to avoid strange artefacts in your exports.
+  4. The order of the layers in Figma will translate to the order of the paths in the SVG (top layer -> last path, second layer -> second to last path, last layer -> path 1). For complex designs, it might make sense to keep this in mind for a better overview.
+  5. All the different paths (=single lines) in Figma have to be grouped to keep their position relative to each other. The entire group has to be exported as SVG.
+  6. Designs have to be flipped (upside down) in Figma to show up correctly in Turtle Stitch.
+
+#### Figma settings
+![Settings in Figma](assets/FigmaScreenshot.png)
 
 </details>
-
-<!-- ### 1. Creating a vector graphic (in Figma)
-This guide won't cover how you use Figma as such; it will only focus on what to keep in mind when designing for Turtle Stitch.
-
-> [!TIP]
-> Make sure that the design you want to export as SVG is not bigger than what your stitching machine can handle. In my case, I figured out that a design in Figma which is 900 x 650 pixels, will result in a stitching of 18 x 13cm (which is the maximum my machine can handle).
-
-- Every "single line" to get stitched has to be its own layer in Figma which will result in an individual path per layer once the creation gets exported from Figma as an SVG.
-- The order of the layers in Figma will translate to the order of the paths in the SVG (top layer -> path 1, second layer -> path 2, last layer -> last path). For complex designs it might make sense to keep this in mind for a better overview.
-- All the different paths (=single lines) in Figma have to be grouped to keep their position relative to each other. The entire group has to be exported as SVG.
-- Designs have to be flipped (upside down) in Figma to show up correctly in Turtle Stitch.-->
-
-
-https://html-preview.github.io/?url=https://github.com/konki-vienna/SVG-to-TurtleStitch/blob/main/TurtleStitchPathTool%20v10.html
