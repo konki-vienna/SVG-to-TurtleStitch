@@ -49,5 +49,6 @@ This guide won't cover how to use Figma as such; it will only focus on what to k
   2. Upload your SVG file (`Letter-E.svg`
   3. Be happy
   4. 
-  https://html-preview.github.io/?url=https://github.com/bartaz/impress.js/blob/master/index.html
+  https://github.com/konki-vienna/SVG-to-TurtleStitch/blob/main/TurtleStitchPathTool%20v10.html
+  [SVG-to-TurtleStitch-Converter 🐢](https://github.com/konki-vienna/SVG-to-TurtleStitch/blob/main/TurtleStitchPathTool%20v10.html)
 
