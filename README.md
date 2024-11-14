@@ -29,10 +29,10 @@ This guide won't cover how to use Figma as such; it will only focus on what to k
 <details>
 <summary>What to keep in mind</summary>
 
-  1. Make sure that the design you want to export as SVG is not bigger than what your stitching machine can handle. In my case, I figured out that a design in Figma which is 900 x 650 pixels, will result in a stitching of 18 x 13cm (which is the maximum my machine can handle).
-  2. Every "single line" to get stitched has to be its own layer in Figma which will result in an individual path per layer once the creation gets exported from Figma as an SVG.
-  3. Make sure to set every single `Stroke' to `center` to avoid strange artefacts in your exports.
-  4. The order of the layers in Figma will translate to the order of the paths in the SVG (top layer -> last path, second layer -> second to last path, last layer -> path 1). For complex designs, it might make sense to keep this in mind for a better overview.
+  1. Make sure that the design you want to export as SVG is not bigger than what your stitching machine can handle. In my case, I figured out that a design in Figma which is `900 x 650 pixels`, will result in a stitching of `18 x 13cm` (which is the maximum my machine can handle).
+  2. Every line that shall get stitched separately (=not connected to another line) has to be its own layer in Figma which will result in an individual path per layer once the creation gets exported from Figma as an SVG.
+  3. Make sure to set every single `Stroke` to `Center` to avoid strange artefacts in your exports.
+  4. The order of the layers in Figma (from bottom to top) will translate to the order of the paths in the SVG (from first path to last path): top layer -> last path, second layer -> second to last path, last layer -> path 1. For complex designs, it might make sense to keep this in mind for a better overview.
   5. All the different paths (=single lines) in Figma have to be grouped to keep their position relative to each other. The entire group has to be exported as SVG.
   6. Designs have to be flipped (upside down) in Figma to show up correctly in Turtle Stitch.
 
@@ -40,3 +40,13 @@ This guide won't cover how to use Figma as such; it will only focus on what to k
 ![Settings in Figma](assets/FigmaScreenshot.png)
 
 </details>
+
+### 2. Converting SVG to CSV
+<details>
+<summary>Instructions</summary>
+
+  1. Open the [SVG-to-TurtleStitch converter](https://github.com/konki-vienna/SVG-to-TurtleStitch/blob/main/TurtleStitchPathTool%20v10.html)
+  2. Upload your SVG file (`Letter-E.svg`
+  3. Be happy
+</details>
+
