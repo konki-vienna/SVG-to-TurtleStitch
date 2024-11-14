@@ -37,17 +37,14 @@ This guide won't cover how to use Figma as such; it will only focus on what to k
   6. Designs have to be flipped (upside down) in Figma to show up correctly in Turtle Stitch.
 
 #### Figma settings
-![Settings in Figma](assets/FigmaScreenshot.png)
-
-#### SVG export
-You can download the exported [SVG file here](https://raw.githubusercontent.com/konki-vienna/SVG-to-TurtleStitch/refs/heads/main/SVGs/Letter-E.svg).
+![Settings in Figma](assets/FigmaPreview.png)
 
 </details>
 
 #### SVG export
 You can download the exported [SVG file here](https://raw.githubusercontent.com/konki-vienna/SVG-to-TurtleStitch/refs/heads/main/SVGs/Letter-E.svg).
 
-### 2. Converting SVG to CSV
+### 2. Converting SVG paths to CSV output
 <details>
 <summary>Detailed Instructions</summary>
 
@@ -68,3 +65,15 @@ Tip: If the highlighted path is not visible because it is above the upper edge o
 
 </details>
 
+### 3. Save CSV output in Google spreadsheet
+<details>
+<summary>Detailed Instructions</summary>
+
+  1. Open a new spreadsheet in your Google Drive account.
+  2. Put the spreadsheet's focus on table cell `A1`.
+  3. Paste the data from the clipboard into the spreadsheet.
+  4. With <kbd>command</kbd>+<kbd>▼</kbd> jump to the last populated cell in column `A`.
+  5. Make sure that the last element of column `A` is either the keyword `stitch` or `fill`.
+  6. Select the entire column `A` by clicking on the column's table header.
+  7. 
+</details
