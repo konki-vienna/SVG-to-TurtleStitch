@@ -62,6 +62,9 @@ Tip: If the highlighted path is not visible because it is above the upper edge o
          - `stitch` will simply stitch the path in TurtelStitch
          - `fill` will stitch the path and fill it in TurtleStitch
          - `addToFill` and `merge` will stitch several paths and fill them in TurtleStitch in a way that overlapping parts of a path will not be filled. This allows the creation of filled areas and omits intersecting shapes.
+      
+#### The SVG-to-TurtleStitch-Converter interface
+![Screenshot of the converter website](assets/ConverterScreenshot.png)
 
 </details>
 
