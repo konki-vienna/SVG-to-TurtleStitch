@@ -39,14 +39,17 @@ This guide won't cover how to use Figma as such; it will only focus on what to k
 #### Figma settings
 ![Settings in Figma](assets/FigmaScreenshot.png)
 
+#### SVG export
+You can download the exported [SVG file here](https://github.com/konki-vienna/SVG-to-TurtleStitch/blob/main/SVGs/Letter-E.svg)
+
 </details>
 
 ### 2. Converting SVG to CSV
 <details>
-<summary>Instructions</summary>
+<summary>Detailed Instructions</summary>
 
   1. Open the [SVG-to-TurtleStitch-Converter 🐢](https://html-preview.github.io/?url=https://github.com/konki-vienna/SVG-to-TurtleStitch/blob/main/TurtleStitchPathTool%20v10.html)
-  2. Upload your SVG file (`Letter-E.svg`
+  2. Upload your SVG file (`Letter-E.svg`)
   3. Be happy
   
 
