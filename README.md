@@ -82,5 +82,13 @@ Tip: If the highlighted path is not visible because it is above the upper edge o
   9. In the next screen select instead of `Entire Document` the tab you want to share. In the second dropdown choose `Comma-separated values (.csv)`.
 
   ![Screenshot of the converter website](assets/Spreadsheet-03.png)
-  11. Then click on publish and copy the URL.
+  
+  10. Then click on publish and copy the URL.
+</details
+
+### 4. Import Data to TurtleStitch and run it
+<details>
+<summary>Detailed Instructions</summary>
+
+  1. Open [the example project in TurtleStitch](https://turtlestitch.org/run#cloud:Username=konki_vienna&ProjectName=BasicFillAndCSV-HowTo).
 </details
