@@ -86,10 +86,14 @@ Tip: If the highlighted path is not visible because it is above the upper edge o
   10. Then click on publish and copy the URL.
 </details
 
+
 ### 4. Import Data to TurtleStitch and run it
+
 <details>
 <summary>Detailed Instructions</summary>
 
   1. Open [the example project in TurtleStitch](https://turtlestitch.org/run#cloud:Username=konki_vienna&ProjectName=BasicFillAndCSV-HowTo).
-  2. 
+  2. Paste the URL from your clipboard into the light blue `URL block` in the second coding block of the project.
+  3. Then hit the yellow `When 🚩 clicked blog` in the topmost coding block of the project to run the project.
+![Screenshot of the converter website](assets/TurtleStitch.png)
 </details
