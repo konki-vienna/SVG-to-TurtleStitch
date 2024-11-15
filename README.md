@@ -91,4 +91,5 @@ Tip: If the highlighted path is not visible because it is above the upper edge o
 <summary>Detailed Instructions</summary>
 
   1. Open [the example project in TurtleStitch](https://turtlestitch.org/run#cloud:Username=konki_vienna&ProjectName=BasicFillAndCSV-HowTo).
+  2. 
 </details
