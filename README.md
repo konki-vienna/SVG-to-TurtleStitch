@@ -76,10 +76,10 @@ Tip: If the highlighted path is not visible because it is above the upper edge o
   5. Make sure that the last element of column `A` is either the keyword `stitch` or `fill`.
   6. Select the entire column `A` by clicking on the column's table header.
   7. In the menu go to `Data` > `Split text to columns`. Now you have all x-coordinates in column `A` and all y-coordinates in column `B`.
-![Screenshot of the converter website](assets/Spreadsheet-01.png)
+  ![Screenshot of the converter website](assets/Spreadsheet-01.png)
   8. In the menu go to  `File` > `Share` > `Publish to web` to make your data accessible to TurtleStitch.
-![Screenshot of the converter website](assets/Spreadsheet-02.png)
+  ![Screenshot of the converter website](assets/Spreadsheet-02.png)
   9. In the next screen select instead of `Entire Document` the tab you want to share. In the second dropdown choose `Comma-separated values (.csv)`.
-
-![Screenshot of the converter website](assets/Spreadsheet-03.png)
+  ![Screenshot of the converter website](assets/Spreadsheet-03.png)
+  10. Then click on publish and copy the URL.
 </details
