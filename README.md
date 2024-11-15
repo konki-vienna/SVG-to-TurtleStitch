@@ -84,10 +84,10 @@ Tip: If the highlighted path is not visible because it is above the upper edge o
   ![Screenshot of the converter website](assets/Spreadsheet-03.png)
   
   10. Then click on publish and copy the URL.
-</details
+</details>
 
 
-### Import Data to TurtleStitch and run it
+### 4. Import Data to TurtleStitch and run it
 
 <details>
 <summary>Detailed Instructions</summary>
