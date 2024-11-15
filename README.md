@@ -80,5 +80,6 @@ Tip: If the highlighted path is not visible because it is above the upper edge o
   8. In the menu go to  `File` > `Share` > `Publish to web` to make your data accessible to TurtleStitch.
 ![Screenshot of the converter website](assets/Spreadsheet-02.png)
   9. In the next screen select instead of `Entire Document` the tab you want to share. In the second dropdown chose `Comma-separated values (.csv)`.
+
 ![Screenshot of the converter website](assets/Spreadsheet-03.png)
 </details
