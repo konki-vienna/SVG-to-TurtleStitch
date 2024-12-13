@@ -101,5 +101,7 @@ Tip: If the highlighted path is not visible because it is above the upper edge o
 
 ### Video walk trough
 
+[![Watch Walkthrough](https://img.youtube.com/vi/oyV5Q8isdtA/0.jpg)](https://www.youtube.com/watch?v=oyV5Q8isdtA)
+
 
 
