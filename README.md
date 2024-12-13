@@ -8,7 +8,7 @@ Turtle Stitch is excellent for creating both algorithmic and freeform patterns b
 
 ---
 TLDR;
-Jump to the [Video Walk Through](#walk-through-anchor)
+Jump to the [Video Walk Through](https://github.com/konki-vienna/SVG-to-TurtleStitch/blob/main/README.md#walk-through-anchor)
 ---
 
 ### Disclaimer:
