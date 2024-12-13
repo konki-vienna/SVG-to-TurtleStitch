@@ -101,4 +101,4 @@ Tip: If the highlighted path is not visible because it is above the upper edge o
 
 ### Video walk trough
 
-[![Watch Walkthrough](https://raw.githubusercontent.com/konki-vienna/SVG-to-TurtleStitch/assets/TurtleStitch_Thumbnail.png)](https://raw.githubusercontent.com/konki-vienna/SVG-to-TurtleStitch/assets/TurtleStitch_Walkthrough_smaller.mp4)
+[![Watch Walkthrough](https://raw.githubusercontent.com/konki-vienna/SVG-to-TurtleStitch/assets/TurtleStitch_Thumbnail.png)](https://github.com/konki-vienna/SVG-to-TurtleStitch/blob/main/assets/TurtleStitch_Walkthrough_smaller.mp4)
