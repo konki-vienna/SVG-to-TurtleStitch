@@ -1,4 +1,4 @@
-<img width="725" alt="stitched" src="https://github.com/user-attachments/assets/79c8365e-bf70-448d-ab8f-e38839c934c3" /># SVG-to-TurtleStitch 🐢
+# SVG-to-TurtleStitch 🐢
 
 A helper project to use SVG paths via a Google Spreadsheet in <a href="https://www.turtlestitch.org/">Turtle Stitch</a>.
 
@@ -29,7 +29,7 @@ How to get from this…
 
 …to this
 
-![Complex capital letter 'E' as stitched in the software turtle stitch](assets/stitched.png)
+<img width="320" alt="Complex capital letter 'E' as stitched in the software turtle stitch" src="https://github.com/user-attachments/assets/79c8365e-bf70-448d-ab8f-e38839c934c3" />
 
 
 ### 1. Creating a vector graphic (in Figma)
