@@ -97,3 +97,8 @@ Tip: If the highlighted path is not visible because it is above the upper edge o
   3. Then hit the yellow `When 🚩 clicked` blog in the topmost coding block of the project to run the project.
 ![Screenshot of the converter website](assets/TurtleStitch.png)
 </details
+
+
+### Video walk trough
+
+[![Watch Walkthrough](https://raw.githubusercontent.com/konki-vienna/SVG-to-TurtleStitch/assets/TurtleStitch_Thumbnail.png)](https://raw.githubusercontent.com/konki-vienna/SVG-to-TurtleStitch/assets/TurtleStitch_Walkthrough_smaller.mp4)
