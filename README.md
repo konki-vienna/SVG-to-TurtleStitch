@@ -8,6 +8,11 @@ Turtle Stitch is excellent for creating both algorithmic and freeform patterns b
 
 ---
 
+### TLDR;
+You can scroll to the bottom of the page to watch a video walk through.
+
+---
+
 ### Disclaimer:
 
 While using tools other than Figma or Google Spreadsheets is perfectly fine, this guide will specifically focus on the process as it relates to my particular setup at hand.
