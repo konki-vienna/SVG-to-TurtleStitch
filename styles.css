@@ -38,7 +38,7 @@ body {
 }
 textarea {
   width: 100%;
-  height: 200px;
+  height: 80px;
   margin-top: 10px;
   font-family: monospace;
 }
@@ -78,7 +78,7 @@ button:hover {
   padding: 10px;
   background: #f8f8f8;
   border-radius: 4px;
-  max-height: 800px;
+  max-height: 400px;
   overflow-y: auto;
 }
 .legend-item {
