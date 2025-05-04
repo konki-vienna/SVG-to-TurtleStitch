@@ -59,6 +59,10 @@
       button:hover {
         background: #0052a3;
       }
+      #clearClipboardButton {
+        background: #cc0000;
+        margin-top: 8px;
+      }
       .dot {
         r: 2;
       }
@@ -70,6 +74,7 @@
         margin-top: 10px;
         font-family: monospace;
       }
+      /* Updated legend styles with max height and scroll */
       .legend {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -78,6 +83,8 @@
         padding: 10px;
         background: #f8f8f8;
         border-radius: 4px;
+        max-height: 800px;
+        overflow-y: auto;
       }
       .legend-item {
         display: flex;
@@ -165,6 +172,9 @@
       .toast.success {
         background: #2e7d32;
       }
+      .toast.error {
+        background: #b71c1c;
+      }
       .credits {
         margin-top: 40px;
         padding-top: 20px;
@@ -232,7 +242,16 @@
         <textarea id="output" readonly></textarea>
       </div>
 
+      <!-- Checkbox for accumulate clipboard, checked by default -->
+      <div class="input-group" style="margin-bottom: 10px">
+        <label>
+          <input type="checkbox" id="accumulateClipboard" checked />
+          Accumulate in clipboard
+        </label>
+      </div>
+
       <button id="copyButton">Copy to Clipboard</button>
+      <button id="clearClipboardButton">Clear Clipboard</button>
 
       <div class="credits">
         <p>
@@ -256,6 +275,9 @@
       let allPaths = [];
       let pointsPerPath = [];
       let csvData = [];
+
+      // Internal variable to accumulate clipboard content to avoid readText permission prompt
+      let accumulatedCSV = "";
 
       const pathColors = [
         "#FF6F61",
@@ -618,12 +640,25 @@
           csvLines.push(`${point.x},${point.y}`);
         });
 
-        document.getElementById("output").value = csvLines.join("\n");
+        // Remove all empty lines to avoid empty rows in CSV output
+        const cleanedCsvLines = csvLines.filter((line) => line.trim() !== "");
+        document.getElementById("output").value = cleanedCsvLines.join("\n");
 
         updateLegend(allPaths, csvData);
       }
 
-      function copyPathCSV(pathIndex, pathPoints, string = undefined) {
+      function cleanCsvText(text) {
+        // Remove empty lines and lines with "Accumulate in clipboard"
+        return text
+          .split("\n")
+          .filter(
+            (line) =>
+              line.trim() !== "" && line.trim() !== "Accumulate in clipboard"
+          )
+          .join("\n");
+      }
+
+      async function copyPathCSV(pathIndex, pathPoints, string = undefined) {
         const pathCSV = pathPoints
           .map((point) => `${point.x},${point.y}`)
           .join("\n");
@@ -631,7 +666,35 @@
         if (string != undefined) {
           finalCSV = pathCSV + "\n" + string;
         }
-        navigator.clipboard.writeText(finalCSV);
+
+        const accumulate = document.getElementById(
+          "accumulateClipboard"
+        ).checked;
+
+        if (accumulate) {
+          // Clean new CSV data
+          const cleanedNew = cleanCsvText(finalCSV);
+
+          if (accumulatedCSV.trim() === "") {
+            accumulatedCSV = cleanedNew;
+          } else {
+            accumulatedCSV += "\n\n" + cleanedNew;
+          }
+
+          try {
+            await navigator.clipboard.writeText(accumulatedCSV);
+          } catch (err) {
+            showToast("Failed to write to clipboard", "error");
+          }
+        } else {
+          accumulatedCSV = ""; // reset when not accumulating
+          try {
+            await navigator.clipboard.writeText(finalCSV);
+          } catch (err) {
+            showToast("Failed to write to clipboard", "error");
+          }
+        }
+
         showToast(`Copied to clipboard`);
       }
 
@@ -692,12 +755,32 @@
         .getElementById("interval")
         .addEventListener("change", analyzeAllPaths);
 
-      document.getElementById("copyButton").addEventListener("click", () => {
-        const textarea = document.getElementById("output");
-        textarea.select();
-        document.execCommand("copy");
-        showToast(`Copied to clipboard`);
-      });
+      document
+        .getElementById("copyButton")
+        .addEventListener("click", async () => {
+          const textarea = document.getElementById("output");
+          textarea.select();
+          try {
+            await navigator.clipboard.writeText(textarea.value);
+            showToast(`Copied to clipboard`);
+          } catch {
+            // fallback for execCommand
+            document.execCommand("copy");
+            showToast(`Copied to clipboard`);
+          }
+        });
+
+      document
+        .getElementById("clearClipboardButton")
+        .addEventListener("click", async () => {
+          try {
+            await navigator.clipboard.writeText("");
+            accumulatedCSV = "";
+            showToast("Clipboard cleared");
+          } catch (err) {
+            showToast("Failed to clear clipboard", "error");
+          }
+        });
     </script>
   </body>
 </html>
