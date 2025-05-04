@@ -6,11 +6,21 @@ A helper project to use SVG paths via a Google Spreadsheet in <a href="https://w
 
 Turtle Stitch is excellent for creating both algorithmic and freeform patterns but generating precise, non-algorithmic designs can be challenging. To address this, I developed a workflow that allows you to design in a vector graphic tool like <a href="https://www.figma.com/">Figma </a> and export your creations as <a href="https://en.wikipedia.org/wiki/SVG">Scalable Vector Graphics (SVG)</a>. The paths within the SVG can then be converted into an array of x- and y-coordinates, which can easily be copied to your clipboard and pasted into a Google Spreadsheet. This data can subsequently be imported into Turtle Stitch, enabling you to create custom embroidery designs.
 
+---
+
+### TLDR;
+
+You can scroll to the bottom of the page to watch a video walk through.
+
+---
+
 ### Disclaimer:
 
 While using tools other than Figma or Google Spreadsheets is perfectly fine, this guide will specifically focus on the process as it relates to my particular setup at hand.
 
 Feel free to let me know if you need any more adjustments!
+
+---
 
 ## How to
 
@@ -20,7 +30,7 @@ How to get from this…
 
 …to this
 
-![Complex capital letter 'E' like to be used for a monogram or similar](assets/Letter-E@0.5x.png)
+<img width="320" alt="Complex capital letter 'E' as stitched in the software turtle stitch" src="https://github.com/user-attachments/assets/79c8365e-bf70-448d-ab8f-e38839c934c3" />
 
 ### 1. Creating a vector graphic (in Figma)
 
@@ -102,6 +112,8 @@ You can download the exported [SVG file here](https://raw.githubusercontent.com/
 ![Screenshot of the converter website](assets/TurtleStitch.png)
 </details
 
-### Video walk trough
+---
 
-[![Watch Walkthrough](https://raw.githubusercontent.com/konki-vienna/SVG-to-TurtleStitch/assets/TurtleStitch_Thumbnail.png)](https://raw.githubusercontent.com/konki-vienna/SVG-to-TurtleStitch/assets/TurtleStitch_Walkthrough_smaller.mp4)
+## Video walk trough
+
+[![Watch Walkthrough](https://img.youtube.com/vi/oyV5Q8isdtA/0.jpg)](https://www.youtube.com/watch?v=oyV5Q8isdtA)
