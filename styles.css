@@ -1,0 +1,203 @@
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #f5f5f5;
+}
+.container {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.controls {
+  margin-bottom: 20px;
+}
+.input-group {
+  margin-bottom: 15px;
+}
+.input-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+.preview {
+  border: 1px solid #ddd;
+  margin: 20px 0;
+  padding: 20px;
+  background: #fff;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+#pathPreview {
+  width: 100%;
+  height: auto;
+  background: #f8f8f8;
+}
+textarea {
+  width: 100%;
+  height: 200px;
+  margin-top: 10px;
+  font-family: monospace;
+}
+button {
+  background: #0066cc;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+button:hover {
+  background: #0052a3;
+}
+#clearClipboardButton {
+  background: #cc0000;
+  margin-top: 8px;
+}
+.dot {
+  r: 2;
+}
+#stats {
+  text-align: center;
+  padding: 10px;
+  background: #f8f8f8;
+  border-radius: 4px;
+  margin-top: 10px;
+  font-family: monospace;
+}
+/* Updated legend styles with max height and scroll */
+.legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 10px;
+  margin: 20px 0;
+  padding: 10px;
+  background: #f8f8f8;
+  border-radius: 4px;
+  max-height: 800px;
+  overflow-y: auto;
+}
+.legend-item {
+  display: flex;
+  flex-wrap: wrap; /* allow wrapping */
+  align-items: center;
+  padding: 8px;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 0; /* prevent overflow */
+}
+.legend-color {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  margin-right: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+.legend-info {
+  flex-grow: 1;
+  font-size: 14px;
+  line-height: 1.4;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 12px;
+}
+.legend-buttons {
+  display: flex;
+  flex-wrap: wrap; /* allow buttons to wrap to multiple lines */
+  gap: 5px;
+  margin-top: 6px;
+  flex-grow: 1;
+  min-width: 0;
+  align-items: center;
+}
+.legend-buttons > div {
+  flex: 0 0 auto;
+  padding: 5px 10px;
+  font-size: 12px;
+  white-space: nowrap;
+  border-radius: 4px;
+  background: #0066cc;
+  color: white;
+  user-select: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.legend-buttons > div:hover {
+  background: #0052a3;
+}
+.dimmed {
+  opacity: 0.3;
+}
+.path-preview path {
+  transition: opacity 0.2s ease;
+}
+.path-preview path.dimmed {
+  opacity: 0.3;
+}
+.toast-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 1000;
+}
+.toast {
+  background: #333;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s;
+  opacity: 0;
+}
+.toast.success {
+  background: #2e7d32;
+}
+.toast.error {
+  background: #b71c1c;
+}
+.credits {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+  text-align: center;
+  color: #666;
+}
+.credits p {
+  margin: 8px 0;
+}
+.version {
+  font-size: 12px;
+  color: #999;
+}
+.social-links {
+  margin-top: 16px;
+}
+.social-link {
+  display: inline-block;
+  padding: 6px 12px;
+  margin: 0 8px;
+  color: #0066cc;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+.social-link:hover {
+  background: #f0f7ff;
+  color: #0052a3;
+}
