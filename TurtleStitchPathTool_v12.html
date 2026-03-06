@@ -3,6 +3,7 @@
   <head>
     <title>SVG Path Analyzer for Turtle Stitch</title>
     <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   </head>
   <body>
     <div class="container">
@@ -22,10 +23,10 @@
         <div class="input-group">
           <label for="previewSize">Preview size:</label>
           <select id="previewSize">
-            <option value="1.0" selected>100% – Full</option>
+            <option value="1.0">100% – Full</option>
             <option value="0.75">75% – Large</option>
             <option value="0.5">50% – Medium</option>
-            <option value="0.25">25% – Small</option>
+            <option value="0.25" selected>25% – Small</option>
             <option value="0">Hidden</option>
           </select>
         </div>
@@ -60,6 +61,7 @@
 
       <button id="copyButton">Copy to Clipboard</button>
       <button id="clearClipboardButton">Clear Clipboard</button>
+      <button id="downloadXlsxButton">⬇ Download as .xlsx</button>
 
       <div class="credits">
         <p>
@@ -429,6 +431,80 @@
         const ok = await writeToClipboard(textToCopy);
         if (ok) showToast("Copied to clipboard");
       });
+
+      function downloadAsXlsx() {
+        // Determine source: accumulated clipboard if available, otherwise full csvData
+        const source = accumulatedCSV.trim() !== "" ? accumulatedCSV : document.getElementById("output").value;
+
+        if (!source.trim()) {
+          showToast("No data to export", "error");
+          return;
+        }
+
+        const wb = XLSX.utils.book_new();
+
+        // Split source into per-path blocks (separated by blank lines or # headers)
+        const blocks = [];
+        let currentBlock = null;
+
+        source.split("\n").forEach((line) => {
+          const trimmed = line.trim();
+          if (trimmed.startsWith("# path-") || trimmed.startsWith("# Path")) {
+            if (currentBlock) blocks.push(currentBlock);
+            currentBlock = { name: trimmed.replace(/^#\s*/, "").slice(0, 31), rows: [] };
+          } else if (trimmed.startsWith("#") || trimmed === "x,y") {
+            // skip color comments and header line
+          } else if (trimmed !== "" && currentBlock) {
+            const parts = trimmed.split(",");
+            const x = parseFloat(parts[0]);
+            const y = parseFloat(parts[1]);
+            if (parts.length >= 2 && !isNaN(x) && !isNaN(y)) {
+              // Normal coordinate row
+              currentBlock.rows.push({ x, y });
+            } else {
+              // Suffix string like "stitch", "fill", "addToFill,withoutBorder" etc.
+              currentBlock.rows.push({ x: trimmed, y: "" });
+            }
+          } else if (trimmed !== "" && !currentBlock) {
+            currentBlock = { name: "Sheet1", rows: [] };
+            const parts = trimmed.split(",");
+            const x = parseFloat(parts[0]);
+            const y = parseFloat(parts[1]);
+            if (parts.length >= 2 && !isNaN(x) && !isNaN(y)) {
+              currentBlock.rows.push({ x, y });
+            } else {
+              currentBlock.rows.push({ x: trimmed, y: "" });
+            }
+          }
+        });
+        if (currentBlock && currentBlock.rows.length > 0) blocks.push(currentBlock);
+
+        if (blocks.length === 0) {
+          showToast("No valid coordinate data found", "error");
+          return;
+        }
+
+        // One sheet per path block
+        blocks.forEach((block, i) => {
+          const sheetName = block.name || `Path ${i + 1}`;
+          const ws = XLSX.utils.json_to_sheet(block.rows, { header: ["x", "y"] });
+
+          // Style header row (bold) — SheetJS CE supports basic cell metadata
+          ["A1", "B1"].forEach((ref) => {
+            if (ws[ref]) ws[ref].s = { font: { bold: true } };
+          });
+
+          // Set column widths
+          ws["!cols"] = [{ wch: 12 }, { wch: 12 }];
+
+          XLSX.utils.book_append_sheet(wb, ws, sheetName.slice(0, 31));
+        });
+
+        XLSX.writeFile(wb, "TurtleStitch_Coordinates.xlsx");
+        showToast(`Exported ${blocks.length} sheet${blocks.length > 1 ? "s" : ""} as .xlsx`);
+      }
+
+      document.getElementById("downloadXlsxButton").addEventListener("click", downloadAsXlsx);
 
       document.getElementById("clearClipboardButton").addEventListener("click", async () => {
         const ok = await writeToClipboard("");
