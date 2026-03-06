@@ -56,17 +56,18 @@ This guide won't cover how to use Figma as such; it will only focus on what to k
 
 You can download the exported [SVG file here](https://raw.githubusercontent.com/konki-vienna/SVG-to-TurtleStitch/refs/heads/main/SVGs/Letter-E.svg).
 
-### 2. Converting SVG paths to CSV output
+### 2. Converting SVG paths to CSV
+
+Open the [SVG-to-TurtleStitch-Converter 🐢](https://html-preview.github.io/?url=https://github.com/konki-vienna/SVG-to-TurtleStitch/blob/main/TurtleStitchPathTool_v12.html).
 
 <details>
 <summary>Detailed Instructions</summary>
 
-1. Open the [SVG-to-TurtleStitch-Converter 🐢](https://html-preview.github.io/?url=https://github.com/konki-vienna/SVG-to-TurtleStitch/blob/main/TurtleStitchPathTool_v12.html).
-2. Upload your SVG file (`Letter-E.svg`) to get a preview of the SVG - each path has a different colour.
-3. You can change the interval, which is the distance in pixels between two points on each SVG's path (x and y coordinates).
-4. Below the SVG preview, you have a set of legend items—one per SVG path. Hovering over a legend item will highlight the respective path and dim all other paths.
+1. Upload your SVG file (`Letter-E.svg`) to get a preview of the SVG - each path has a different colour.
+2. You can change the interval, which is the distance in pixels between two points on each SVG's path (x and y coordinates).
+3. Below the SVG preview, you have a set of legend items—one per SVG path. Hovering over a legend item will highlight the respective path and dim all other paths.
    Tip: If the highlighted path is not visible because it is above the upper edge of your browser window, you can zoom out of the entire application (in Chrome <kbd>command</kbd> + <kbd>-</kbd>/<kbd>+</kbd>).
-5. Clicking on a legend item copies the path's x and y coordinates as a comma-separated array into the clipboard. Each legend item consists of four buttons:
+4. Clicking on a legend item copies the path's x and y coordinates as a comma-separated array into the clipboard. Each legend item consists of four buttons:
    - The largest copies copies only the path's x and y coordinates as a comma-separated array into the clipboard
    - All other ones will copy the same data into the clipboard, but add the button labels `stitch`, `fill`, `addToFill` or `merge` as the last element of the array. These keywords can be used in TurtelStitch to do different things:
      - `stitch` will simply stitch the path in TurtelStitch
