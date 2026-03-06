@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SVG Path Analyzer for Turtle Stitch</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>SVG Path Analyzer for Turtle Stitch</h1>
+
+      <div class="controls">
+        <div class="input-group">
+          <label for="fileInput">Upload SVG file:</label>
+          <input type="file" id="fileInput" accept=".svg" />
+        </div>
+
+        <div class="input-group">
+          <label for="interval">Interval (px):</label>
+          <input type="number" id="interval" value="5" min="1" step="1" />
+        </div>
+
+        <div class="input-group">
+          <label for="previewSize">Preview size:</label>
+          <select id="previewSize">
+            <option value="1.0" selected>100% – Full</option>
+            <option value="0.75">75% – Large</option>
+            <option value="0.5">50% – Medium</option>
+            <option value="0.25">25% – Small</option>
+            <option value="0">Hidden</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="preview">
+        <svg
+          id="pathPreview"
+          class="path-preview"
+          preserveAspectRatio="xMidYMid meet"
+        ></svg>
+      </div>
+
+      <div class="legend" id="legend"></div>
+      <div class="dimensions" id="dimensions"></div>
+
+      <div id="stats"></div>
+
+      <div class="input-group">
+        <label for="output"><br />Coordinates (CSV):</label>
+        <textarea id="output" readonly></textarea>
+      </div>
+
+      <div class="input-group" style="margin-bottom: 10px">
+        <label>
+          <input type="checkbox" id="accumulateClipboard" checked />
+          Accumulate in clipboard
+        </label>
+      </div>
+
+      <button id="copyButton">Copy to Clipboard</button>
+      <button id="clearClipboardButton">Clear Clipboard</button>
+
+      <div class="credits">
+        <p>
+          Created with ❤️ by <a href="#">Konstantin Demblin</a> with the help of
+          <a href="https://claude.ai/">Claude AI</a>.
+        </p>
+        <p class="version">Version 1.11.0</p>
+        <div class="social-links">
+          <a href="#" class="social-link">GitHub</a>
+          <a href="#" class="social-link">Documentation</a>
+          <a href="#" class="social-link">Report Issues</a>
+        </div>
+      </div>
+
+      <div class="toast-container" id="toastContainer"></div>
+    </div>
+    <script>
+      let originalViewBox = null;
+      let allPaths = [];         // original SVG path elements (from parsed SVG doc)
+      let pointsPerPath = [];
+      let csvData = [];
+      let accumulatedCSV = "";
+
+      // Deduplicated color palette
+      const pathColors = [
+        "#FF6F61", "#6B5B93", "#88B04B", "#F7CAC9", "#92A8D1",
+        "#955251", "#E4B5B2", "#F9C74F", "#90BE6D", "#F94144",
+        "#F3722C", "#F8961E", "#277DA1", "#FF9B85", "#43AA8B",
+        "#577590", "#4D908E", "#FFC300", "#FF5733", "#C70039",
+        "#900C3F", "#581845", "#FF8D1B", "#FFB300", "#D1C6E7",
+        "#6A0572", "#A9DFBF", "#F5B041", "#D35400", "#1F618D",
+        "#F1948A", "#7D3C98", "#5D6D7E", "#F4D03F", "#E67E22",
+        "#2980B9", "#16A085", "#1ABC9C", "#2ECC71", "#27AE60",
+        "#D5DBDB", "#F7DC6F", "#B03A2E", "#F5B7B1",
+      ];
+
+      // Button definitions: [label, csvSuffix]
+      const BUTTON_DEFS = [
+        ["stitch",              "stitch"],
+        ["fill",                "fill"],
+        ["fill-noBorder",       "fillWithoutBorders"],
+        ["addToFill",           "addToFill"],
+        ["addToFill-noBorder",  "addToFill,withoutBorder"],
+        ["merge",               "merge"],
+        ["merge-noBorder",      "merge,withoutBorder"],
+      ];
+
+      // Debounce helper
+      function debounce(fn, delay) {
+        let timer;
+        return (...args) => {
+          clearTimeout(timer);
+          timer = setTimeout(() => fn(...args), delay);
+        };
+      }
+
+      function getPointsAlongPath(path, interval) {
+        const points = [];
+        const pathLength = path.getTotalLength();
+        let distance = 0;
+        while (distance <= pathLength) {
+          const point = path.getPointAtLength(distance);
+          points.push([
+            Math.round(point.x * 100) / 100,
+            Math.round(point.y * 100) / 100,
+          ]);
+          distance += interval;
+        }
+        return points;
+      }
+
+      function updateLegend(paths, points) {
+        const legend = document.getElementById("legend");
+        legend.innerHTML = "";
+
+        paths.forEach((originalPath, index) => {
+          const pathPoints = points.filter((p) => p.pathIndex === index + 1);
+          const pathColor = pathColors[index % pathColors.length];
+
+          // Collect any useful ID/label from the original SVG element
+          const svgId = originalPath.getAttribute("id");
+          const svgLabel = originalPath.getAttribute("inkscape:label")
+            || originalPath.getAttribute("aria-label")
+            || null;
+          const idDisplay = svgLabel || svgId || null;
+
+          const container = document.createElement("div");
+
+          // --- Info row ---
+          const item = document.createElement("div");
+          item.className = "legend-item";
+
+          const colorSwatch = document.createElement("div");
+          colorSwatch.className = "legend-color";
+          colorSwatch.style.backgroundColor = pathColor;
+
+          const info = document.createElement("div");
+          info.className = "legend-info";
+          info.innerHTML = `
+            <strong>Path ${index + 1}</strong>${idDisplay ? ` <span class="path-id">#${idDisplay}</span>` : ""}<br>
+            <span class="path-id">${pathPoints.length} points</span><br>
+            <span class="color-hex">${pathColor}</span>
+          `;
+
+          item.appendChild(colorSwatch);
+          item.appendChild(info);
+          item.addEventListener("mouseenter", () => highlightPath(index));
+          item.addEventListener("mouseleave", resetPaths);
+          item.addEventListener("click", () => copyPathCSV(index, pathPoints));
+
+          // --- Button row ---
+          const buttonContainer = document.createElement("div");
+          buttonContainer.className = "legend-buttons";
+
+          BUTTON_DEFS.forEach(([label, suffix]) => {
+            const btn = document.createElement("div");
+            btn.textContent = label;
+            btn.addEventListener("click", () => copyPathCSV(index, pathPoints, suffix));
+            btn.addEventListener("mouseenter", () => highlightPath(index));
+            btn.addEventListener("mouseleave", resetPaths);
+            buttonContainer.appendChild(btn);
+          });
+
+          container.appendChild(item);
+          container.appendChild(buttonContainer);
+          legend.appendChild(container);
+        });
+      }
+
+      function highlightPath(selectedIndex) {
+        const preview = document.getElementById("pathPreview");
+
+        preview.querySelectorAll("path").forEach((path, index) => {
+          path.classList.toggle("dimmed", index !== selectedIndex);
+        });
+
+        preview.querySelectorAll(".dot").forEach((dot) => {
+          const dotPathIndex = parseInt(dot.dataset.pathIndex, 10);
+          if (dotPathIndex === selectedIndex) {
+            dot.style.display = "";
+            dot.setAttribute("r", "3");
+          } else {
+            dot.style.display = "none";
+          }
+        });
+      }
+
+      function resetPaths() {
+        const preview = document.getElementById("pathPreview");
+        preview.querySelectorAll("path").forEach((path) => path.classList.remove("dimmed"));
+        preview.querySelectorAll(".dot").forEach((dot) => {
+          dot.style.display = "";
+          dot.setAttribute("r", "2");
+        });
+      }
+
+      function updatePreview(svgContent) {
+        const parser = new DOMParser();
+        const svgDoc = parser.parseFromString(svgContent, "image/svg+xml");
+        const paths = Array.from(svgDoc.querySelectorAll("path"));
+
+        if (paths.length === 0) {
+          showToast("No paths found in SVG file", "error");
+          return;
+        }
+
+        allPaths = paths;
+        pointsPerPath = [];
+        csvData = [];
+
+        const preview = document.getElementById("pathPreview");
+        preview.innerHTML = "";
+
+        const originalSvg = svgDoc.querySelector("svg");
+        const viewBox = originalSvg.getAttribute("viewBox") || "0 0 100 100";
+        preview.setAttribute("viewBox", viewBox);
+        originalViewBox = viewBox;
+
+        const [vbX, vbY, vbWidth, vbHeight] = viewBox.split(" ").map(Number);
+
+        paths.forEach((originalPath, index) => {
+          const newPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          newPath.setAttribute("d", originalPath.getAttribute("d"));
+          newPath.setAttribute("stroke", pathColors[index % pathColors.length]);
+          newPath.setAttribute("fill", "none");
+          newPath.setAttribute("stroke-width", "1");
+          preview.appendChild(newPath);
+        });
+
+        analyzeAllPaths();
+        applyPreviewSize();
+      }
+
+      function analyzeAllPaths() {
+        if (!allPaths.length) return;
+
+        const interval = parseFloat(document.getElementById("interval").value);
+        const preview = document.getElementById("pathPreview");
+
+        preview.querySelectorAll(".dot").forEach((dot) => dot.remove());
+
+        let totalPoints = 0;
+        csvData = [];
+        pointsPerPath = [];
+
+        preview.querySelectorAll("path").forEach((path, pathIndex) => {
+          const dValue = path.getAttribute("d");
+          const pathHex = `path-${(pathIndex + 1).toString().padStart(2, "0")}-${dValue.slice(0, 10)}`;
+          const pathColor = pathColors[pathIndex % pathColors.length];
+          const points = getPointsAlongPath(path, interval);
+          pointsPerPath[pathIndex] = points.length;
+          totalPoints += points.length;
+
+          points.forEach(([x, y]) => {
+            const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            dot.setAttribute("cx", x);
+            dot.setAttribute("cy", y);
+            dot.setAttribute("class", "dot");
+            dot.setAttribute("fill", pathColor);
+            dot.dataset.pathIndex = pathIndex;   // used by highlightPath
+            preview.appendChild(dot);
+
+            csvData.push({ pathIndex: pathIndex + 1, pathHex, pathColor, x, y });
+          });
+        });
+
+        document.getElementById("stats").textContent =
+          `Total paths: ${allPaths.length}, Total points: ${totalPoints}`;
+
+        const csvLines = [];
+        let currentPathIndex = null;
+        csvData.forEach((point) => {
+          if (currentPathIndex !== point.pathIndex) {
+            if (currentPathIndex !== null) csvLines.push("");
+            csvLines.push(`# ${point.pathHex}`);
+            csvLines.push(`# Color: ${point.pathColor}`);
+            csvLines.push("x,y");
+            currentPathIndex = point.pathIndex;
+          }
+          csvLines.push(`${point.x},${point.y}`);
+        });
+
+        const cleanedCsvLines = csvLines.filter((line) => line.trim() !== "");
+        document.getElementById("output").value = cleanedCsvLines.join("\n");
+
+        updateLegend(allPaths, csvData);
+      }
+
+      function cleanCsvText(text) {
+        return text
+          .split("\n")
+          .filter((line) => line.trim() !== "" && line.trim() !== "Accumulate in clipboard")
+          .join("\n");
+      }
+
+      async function writeToClipboard(text) {
+        try {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } catch (err) {
+          showToast("Failed to write to clipboard", "error");
+          return false;
+        }
+      }
+
+      async function copyPathCSV(pathIndex, pathPoints, suffix = undefined) {
+        const pathCSV = pathPoints.map((point) => `${point.x},${point.y}`).join("\n");
+        const finalCSV = suffix !== undefined ? `${pathCSV}\n${suffix}` : pathCSV;
+
+        const accumulate = document.getElementById("accumulateClipboard").checked;
+
+        if (accumulate) {
+          const cleaned = cleanCsvText(finalCSV);
+          accumulatedCSV = accumulatedCSV.trim() === ""
+            ? cleaned
+            : `${accumulatedCSV}\n\n${cleaned}`;
+          await writeToClipboard(accumulatedCSV);
+        } else {
+          accumulatedCSV = "";
+          await writeToClipboard(finalCSV);
+        }
+
+        showToast("Copied to clipboard");
+      }
+
+      function showToast(message, type = "success") {
+        const container = document.getElementById("toastContainer");
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        container.appendChild(toast);
+
+        // Force reflow to trigger CSS transition
+        toast.offsetHeight;
+        toast.style.opacity = "1";
+
+        setTimeout(() => {
+          toast.style.opacity = "0";
+          setTimeout(() => container.removeChild(toast), 300);
+        }, 3000);
+      }
+
+      // --- Preview size ---
+
+      function applyPreviewSize() {
+        const scale = parseFloat(document.getElementById("previewSize").value);
+        const previewWrapper = document.querySelector(".preview");
+        const preview = document.getElementById("pathPreview");
+
+        if (scale === 0) {
+          previewWrapper.style.display = "none";
+          return;
+        }
+
+        previewWrapper.style.display = "";
+
+        if (!originalViewBox) return;
+        const [, , vbWidth, vbHeight] = originalViewBox.split(" ").map(Number);
+        const aspectRatio = vbHeight / vbWidth;
+        const maxWidth = Math.min(900, window.innerWidth - 80);
+        const width = maxWidth * scale;
+        const height = width * aspectRatio;
+
+        preview.style.width = `${width}px`;
+        preview.style.height = `${height}px`;
+
+        document.getElementById("dimensions").innerHTML = `
+          Dimensions: ${width.toFixed(0)}px × ${height.toFixed(0)}px (${Math.round(scale * 100)}%)<br>
+          ViewBox: ${originalViewBox}
+        `;
+      }
+
+      // --- Event listeners ---
+
+      window.addEventListener("resize", applyPreviewSize);
+
+      document.getElementById("previewSize").addEventListener("change", applyPreviewSize);
+
+      document.getElementById("fileInput").addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => updatePreview(e.target.result);
+        reader.readAsText(file);
+      });
+
+      document.getElementById("interval").addEventListener(
+        "input",
+        debounce(analyzeAllPaths, 300)
+      );
+
+      document.getElementById("copyButton").addEventListener("click", async () => {
+        const textarea = document.getElementById("output");
+        const accumulate = document.getElementById("accumulateClipboard").checked;
+        const textToCopy = accumulate && accumulatedCSV.trim() !== ""
+          ? accumulatedCSV
+          : textarea.value;
+        textarea.select();
+        const ok = await writeToClipboard(textToCopy);
+        if (ok) showToast("Copied to clipboard");
+      });
+
+      document.getElementById("clearClipboardButton").addEventListener("click", async () => {
+        const ok = await writeToClipboard("");
+        if (ok) {
+          accumulatedCSV = "";
+          showToast("Clipboard cleared");
+        }
+      });
+    </script>
+  </body>
+</html>
