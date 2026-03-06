@@ -61,7 +61,7 @@ You can download the exported [SVG file here](https://raw.githubusercontent.com/
 <details>
 <summary>Detailed Instructions</summary>
 
-1. Open the [SVG-to-TurtleStitch-Converter 🐢](https://html-preview.github.io/?url=https://github.com/konki-vienna/SVG-to-TurtleStitch/blob/main/TurtleStitchPathTool%20v12.html).
+1. Open the [SVG-to-TurtleStitch-Converter 🐢](https://html-preview.github.io/?url=https://github.com/konki-vienna/SVG-to-TurtleStitch/blob/main/TurtleStitchPathTool_v12.html).
 2. Upload your SVG file (`Letter-E.svg`) to get a preview of the SVG - each path has a different colour.
 3. You can change the interval, which is the distance in pixels between two points on each SVG's path (x and y coordinates).
 4. Below the SVG preview, you have a set of legend items—one per SVG path. Hovering over a legend item will highlight the respective path and dim all other paths.
