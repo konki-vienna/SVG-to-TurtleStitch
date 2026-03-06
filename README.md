@@ -94,7 +94,7 @@ Open the [SVG-to-TurtleStitch-Converter 🐢](https://html-preview.github.io/?ur
 
 ![Screenshot of the converter website](assets/Spreadsheet-03.png)
 
-10. Then click on publish and copy the URL.
+6. Then click on publish and copy the URL.
 </details>
 
 ### 4. Import Data to TurtleStitch and run it
