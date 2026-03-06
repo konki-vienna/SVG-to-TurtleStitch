@@ -85,17 +85,12 @@ Open the [SVG-to-TurtleStitch-Converter 🐢](https://html-preview.github.io/?ur
 <details>
 <summary>Detailed Instructions</summary>
 
-1. Open a new spreadsheet in your Google Drive account.
-2. Put the spreadsheet's focus on table cell `A1`.
-3. Paste the data from the clipboard into the spreadsheet.
-4. With <kbd>command</kbd>+<kbd>▼</kbd> jump to the last populated cell in column `A`.
-5. Make sure that the last element of column `A` is either the keyword `stitch` or `fill`.
-6. Select the entire column `A` by clicking on the column's table header.
-7. In the menu go to `Data` > `Split text to columns`. Now you have all x-coordinates in column `A` and all y-coordinates in column `B`.
-   ![Screenshot of the converter website](assets/Spreadsheet-01.png)
-8. In the menu go to `File` > `Share` > `Publish to web` to make your data accessible to TurtleStitch.
+1. Click the button `Download as .xlsx`.
+2. Open a new spreadsheet in your Google Drive account.
+3. In the menu go to `File` > `Import` and upload the downloaded xlsx-file.
+4. In the menu go to `File` > `Share` > `Publish to web` to make your data accessible to TurtleStitch.
    ![Screenshot of the converter website](assets/Spreadsheet-02.png)
-9. In the next screen select instead of `Entire Document` the tab you want to share. In the second dropdown choose `Comma-separated values (.csv)`.
+5. In the next screen select instead of `Entire Document` the tab you want to share. In the second dropdown choose `Comma-separated values (.csv)`.
 
 ![Screenshot of the converter website](assets/Spreadsheet-03.png)
 
